@@ -33,6 +33,9 @@ Usage is very simple:
 mdcat <markdown_file.md>
 ```
 
+It automatically generates HTML file in the same directory.
+
+
 Default HTML Title is filename, you can add `--title` args to modify:
 
 ```shell
@@ -44,8 +47,6 @@ Default output HTML file is `<input_filename.html>`, you can add `--output` args
 ```shell
 mdcat --title "Hi, Cat" --output ./docs/index.html <markdown_file.md>
 ```
-
-It automatically generates HTML file in the same directory.
 
 ## Demo
 
