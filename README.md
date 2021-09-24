@@ -38,7 +38,7 @@ It automatically generates HTML file in the same directory.
 ## Demo
 
 You can see this markdown file's HTML on:
-[here](https://refined-github-html-preview.kidonng.workers.dev/calganaygun/MDcat/raw/main/README.html)
+[here](https://chyroc.github.io/go-mdcat/README.html)
 
 ## Thanks
 
