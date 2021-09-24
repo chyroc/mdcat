@@ -1,0 +1,36 @@
+name: fetch-data
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      rt:
+        description: 'rt'
+        required: false
+
+jobs:
+
+  run:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+
+    - name: Generate Html
+      run: |
+        go run main.go README.md && mv README.html ./docs/
+
+    - name: Commit and Push
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        git add --all
+        git commit -am "Auto Commit" || echo "no commit"
+        git push || echo "no push"
