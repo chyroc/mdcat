@@ -8,7 +8,7 @@
     <link rel="stylesheet alternate"
     href="https://cdn.jsdelivr.net/gh/primer/github-syntax-dark@master/lib/github-dark.css" id="dark-hl">
       
-    <title>README.md</title>
+    <title>Hi, Cat</title>
   </head>
   
   <body id="markdown-body" data-color-mode="light" data-dark-theme="light">
@@ -39,7 +39,7 @@
         <article class="markdown-body entry-content container-lg" itemprop="text">
             <p><a href="./static/header.png" target="_blank" rel="noopener noreferrer"><img src="./static/header.png" alt="" style="max-width:100%;"></a></p>
 <h1>
-<a id="user-content-go-mdcat" class="anchor" href="#go-mdcat" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>go-mdcat</h1>
+<a id="user-content-mdcat" class="anchor" href="#mdcat" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>mdcat</h1>
 <p>Go language remake of mdcat.</p>
 <p>Uses the GitHub API to convert your markdown files to <a href="https://primer.style/" rel="nofollow">GitHub styled</a> HTML site.</p>
 <h2>
@@ -57,16 +57,18 @@
 <ul>
 <li>go</li>
 </ul>
-<div class="highlight highlight-source-shell"><pre>go install github.com/chyroc/go-mdcat@latest</pre></div>
+<div class="highlight highlight-source-shell"><pre>go install github.com/chyroc/mdcat@latest</pre></div>
 <h2>
 <a id="user-content-usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
 <p>Usage is very simple:</p>
 <div class="highlight highlight-source-shell"><pre>mdcat <span class="pl-k">&lt;</span>markdown_file.md<span class="pl-k">&gt;</span></pre></div>
+<p>Default HTML Title is filename, you can add <code>--title</code> args to modify:</p>
+<div class="highlight highlight-source-shell"><pre>mdcat --title <span class="pl-s"><span class="pl-pds">"</span>Hi, Cat<span class="pl-pds">"</span></span> <span class="pl-k">&lt;</span>markdown_file.md<span class="pl-k">&gt;</span></pre></div>
 <p>It automatically generates HTML file in the same directory.</p>
 <h2>
 <a id="user-content-demo" class="anchor" href="#demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Demo</h2>
 <p>You can see this markdown file's HTML on:
-<a href="https://chyroc.github.io/go-mdcat/README.html" rel="nofollow">here</a></p>
+<a href="https://chyroc.github.io/mdcat/README.html" rel="nofollow">here</a></p>
 <h2>
 <a id="user-content-thanks" class="anchor" href="#thanks" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Thanks</h2>
 <ul>

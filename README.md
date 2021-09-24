@@ -1,6 +1,6 @@
 ![](./static/header.png)
 
-# go-mdcat
+# mdcat
 
 Go language remake of mdcat.
 
@@ -22,7 +22,7 @@ brew install chyroc/tap/mdcat
 - go
 
 ```shell
-go install github.com/chyroc/go-mdcat@latest
+go install github.com/chyroc/mdcat@latest
 ```
 
 ## Usage
@@ -44,7 +44,7 @@ It automatically generates HTML file in the same directory.
 ## Demo
 
 You can see this markdown file's HTML on:
-[here](https://chyroc.github.io/go-mdcat/README.html)
+[here](https://chyroc.github.io/mdcat/README.html)
 
 ## Thanks
 

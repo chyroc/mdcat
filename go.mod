@@ -1,4 +1,4 @@
-module github.com/chyroc/go-mdcat
+module github.com/chyroc/mdcat
 
 go 1.17
 
