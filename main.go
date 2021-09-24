@@ -31,7 +31,7 @@ func main() {
 		return
 	}
 
-	if err = ioutil.WriteFile(target, []byte(html), 0666); err != nil {
+	if err = ioutil.WriteFile(target, []byte(html), 0o666); err != nil {
 		assert(err)
 	}
 
