@@ -1,4 +1,4 @@
-name: fetch-data
+name: generate-html
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
 
     - name: Generate Html
       run: |
-        go run main.go README.md && mv README.html ./docs/
+        go run main.go --title "Hi, Cat" README.md && mv README.html ./docs/
 
     - name: Commit and Push
       run: |

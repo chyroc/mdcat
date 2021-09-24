@@ -33,6 +33,12 @@ Usage is very simple:
 mdcat <markdown_file.md>
 ```
 
+Default HTML Title is filename, you can add `--title` args to modify:
+
+```shell
+mdcat --title "Hi, Cat" <markdown_file.md>
+```
+
 It automatically generates HTML file in the same directory.
 
 ## Demo
