@@ -39,12 +39,18 @@ Default HTML Title is filename, you can add `--title` args to modify:
 mdcat --title "Hi, Cat" <markdown_file.md>
 ```
 
+Default output HTML file is `<input_filename.html>`, you can add `--output` args to modify:
+
+```shell
+mdcat --title "Hi, Cat" --output ./docs/index.html <markdown_file.md>
+```
+
 It automatically generates HTML file in the same directory.
 
 ## Demo
 
 You can see this markdown file's HTML on:
-[here](https://chyroc.github.io/mdcat/README.html)
+[here](https://chyroc.github.io/mdcat)
 
 ## Thanks
 

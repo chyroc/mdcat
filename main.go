@@ -19,27 +19,30 @@ var template string
 
 func main() {
 	app := &cli.App{
-		Name:     "mdcat",
-		HelpName: "",
-		Usage:    "convert markdown file to github style html page",
-		// UsageText:   "",
-		// Description: "",
+		Name:  "mdcat",
+		Usage: "convert markdown file to github style html page",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "title",
 				Value: "",
 				Usage: "html page title",
 			},
+			&cli.StringFlag{
+				Name:  "output",
+				Value: "",
+				Usage: "output filename, default is <input>.html",
+			},
 		},
 		Action: func(c *cli.Context) error {
 			file := c.Args().First()
 			title := c.String("title")
+			output := c.String("output")
 
 			if file == "" {
 				return cli.ShowAppHelp(c)
 			}
 
-			return run(file, title)
+			return run(file, title, output)
 		},
 	}
 
@@ -49,7 +52,7 @@ func main() {
 	}
 }
 
-func run(file, title string) error {
+func run(file, title, output string) error {
 	// args
 	file, filename, target, err := getFilepath(file)
 	if err != nil {
@@ -57,6 +60,9 @@ func run(file, title string) error {
 	}
 	if title == "" {
 		title = filename
+	}
+	if output == "" {
+		output = target
 	}
 
 	bs, err := ioutil.ReadFile(file)
@@ -69,7 +75,7 @@ func run(file, title string) error {
 		return err
 	}
 
-	if err = ioutil.WriteFile(target, []byte(html), 0o666); err != nil {
+	if err = ioutil.WriteFile(output, []byte(html), 0o666); err != nil {
 		return err
 	}
 

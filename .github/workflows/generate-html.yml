@@ -25,7 +25,7 @@ jobs:
 
     - name: Generate Html
       run: |
-        go run main.go --title "Hi, Cat" README.md && mv README.html ./docs/
+        go run main.go --title "Hi, Cat" --output ./docs/index.html README.md
 
     - name: Commit and Push
       run: |
