@@ -23,17 +23,27 @@ func main() {
 				Value: "",
 				Usage: "output filename, default is <input>.html",
 			},
+			&cli.BoolFlag{
+				Name:  "link",
+				Value: false,
+				Usage: "convert linked markdown file",
+			},
 		},
 		Action: func(c *cli.Context) error {
+			setupLog()
+
 			file := c.Args().First()
 			title := c.String("title")
 			output := c.String("output")
+			link := c.Bool("link")
 
 			if file == "" {
 				return cli.ShowAppHelp(c)
 			}
 
-			return internal.Run(file, title, output)
+			log.Printf("input: file=%q, title=%q, output=%q, link=%v", file, title, output, link)
+
+			return internal.Run(file, title, link, output)
 		},
 	}
 
@@ -41,4 +51,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func setupLog() {
+	log.SetPrefix("[mdcat] ")
+	log.SetFlags(log.LstdFlags)
 }

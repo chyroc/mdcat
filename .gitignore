@@ -17,3 +17,5 @@
 somesome/
 ttt/
 .idea/
+dist
+coverage.txt
