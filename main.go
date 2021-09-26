@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/chyroc/mdcat/internal"
+	"github.com/chyroc/mdcat/mdcat"
 	"github.com/urfave/cli/v2"
 )
 
@@ -43,7 +43,7 @@ func main() {
 
 			log.Printf("input: file=%q, title=%q, output=%q, link=%v", file, title, output, link)
 
-			return internal.Run(file, title, link, output)
+			return mdcat.Run(file, title, link, output)
 		},
 	}
 
