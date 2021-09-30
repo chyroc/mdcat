@@ -60,6 +60,9 @@ You can also use meta syntax to define the behavior of mdcat:
 --
 title: "Hi Cat"
 slug: index.html
+--
+
+Hello, World.
 ```
 
 This Meta is like command: `mdcat --title "Hi, Cat" --output ./index.html <markdown_file.md>`.
