@@ -54,6 +54,16 @@ If the markdown file references another markdown file (in the form of [title](./
 mdcat --title "Hi, Cat" --output ./docs/index.html --link <markdown_file.md>
 ```
 
+You can also use meta syntax to define the behavior of mdcat:
+
+```markdown
+--
+title: "Hi Cat"
+slug: index.html
+```
+
+This Meta is like command: `mdcat --title "Hi, Cat" --output ./index.html <markdown_file.md>`.
+
 ## Demo
 
 You can see this markdown file's HTML on:
