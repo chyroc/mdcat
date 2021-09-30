@@ -67,6 +67,13 @@
 <div class="highlight highlight-source-shell"><pre>mdcat --title <span class="pl-s"><span class="pl-pds">"</span>Hi, Cat<span class="pl-pds">"</span></span> <span class="pl-k">&lt;</span>markdown_file.md<span class="pl-k">&gt;</span></pre></div>
 <p>Default output HTML file is <code>&lt;input_filename.html&gt;</code>, you can add <code>--output</code> args to modify:</p>
 <div class="highlight highlight-source-shell"><pre>mdcat --title <span class="pl-s"><span class="pl-pds">"</span>Hi, Cat<span class="pl-pds">"</span></span> --output ./docs/index.html <span class="pl-k">&lt;</span>markdown_file.md<span class="pl-k">&gt;</span></pre></div>
+<p>If the markdown file references another markdown file (in the form of <a href="./markdown-file.md">title</a>), and you want to render the referenced file at the same time, then you can use the <code>--link</code> parameter:</p>
+<div class="highlight highlight-source-shell"><pre>mdcat --title <span class="pl-s"><span class="pl-pds">"</span>Hi, Cat<span class="pl-pds">"</span></span> --output ./docs/index.html --link <span class="pl-k">&lt;</span>markdown_file.md<span class="pl-k">&gt;</span></pre></div>
+<p>You can also use meta syntax to define the behavior of mdcat:</p>
+<div class="highlight highlight-source-gfm"><pre>--
+title: "Hi Cat"
+slug: index.html</pre></div>
+<p>This Meta is like command: <code>mdcat --title "Hi, Cat" --output ./index.html &lt;markdown_file.md&gt;</code>.</p>
 <h2>
 <a id="user-content-demo" class="anchor" href="#demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Demo</h2>
 <p>You can see this markdown file's HTML on:
