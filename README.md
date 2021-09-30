@@ -10,6 +10,8 @@ Uses the GitHub API to convert your markdown files to [GitHub styled](https://pr
 
 - Light/dark mode
 - Code highlighting
+- Web and mobile compatible display
+- Meta information
 
 ## Install
 

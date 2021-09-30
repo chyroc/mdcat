@@ -35,7 +35,6 @@ func ParseMarkdownMeta(source string) (string, map[string]string, error) {
 				} else {
 					// meta 信息
 					// 必然不是 正文
-					fmt.Println("meta:", v)
 					metak, metav, err := parseMeta(v)
 					if err != nil {
 						return "", nil, err
