@@ -21,12 +21,19 @@ var template string
 
 var (
 	done             = map[string]bool{}
+	metas            = map[string]*mdMeta{}
 	mainInputFile    string
 	mainHtmlBaseFile string
 )
 
+type mdMeta struct {
+	Source string
+	Title  string
+	Slug   string
+}
+
 func Run(inputFile, title string, link bool, output string) error {
-	outputFile := genTargetFilePath(inputFile, output)
+	outputFile := genTargetFilePath(inputFile, output, "", "")
 	mainInputFile = inputFile
 	mainHtmlBaseFile = filepath.Base(outputFile)
 
@@ -50,12 +57,19 @@ func run(inputFile, outputFile, title string, link bool) (bool, error) {
 
 	log.Printf("cat %q -> %q", inputFile, outputFile)
 
-	bs, err := ioutil.ReadFile(inputFile)
-	if err != nil {
-		return false, fmt.Errorf("read input fail: %w", err)
+	sourceText := ""
+	meta := getMeta(inputFile)
+	if meta == nil {
+		bs, err := ioutil.ReadFile(inputFile)
+		if err != nil {
+			return false, fmt.Errorf("read input fail: %w", err)
+		}
+		sourceText = string(bs)
+	} else {
+		sourceText = meta.Source
 	}
 
-	html, err := convertWithGitHubApi(title, string(bs))
+	html, err := convertWithGitHubApi(title, sourceText)
 	if err != nil {
 		return false, err
 	}
@@ -67,7 +81,7 @@ func run(inputFile, outputFile, title string, link bool) (bool, error) {
 		}
 		for _, href := range hrefFiles {
 			hrefInputFile := getAbsoluteFilePathOfTwoFile(inputFile, href)
-			hrefOutputFile := genHtmlName(hrefInputFile, getAbsoluteFilePathOfTwoFile(outputFile, href))
+			hrefOutputFile := genTargetFilePath(hrefInputFile, "", outputFile, href)
 
 			if !done[hrefInputFile] {
 				_, _ = run(hrefInputFile, hrefOutputFile, "", link)
@@ -105,31 +119,70 @@ func replaceChildMarkdownLink(inputFile, parentHtml string) (string, []string, b
 	return h, links, true
 }
 
-func genTargetFilePath(inputFile string, output string) string {
+func genTargetFilePath(inputFile string, output string, parentOutputFile, href string) string {
+	// 如果指定了 output，直接返回，只有入口文件，可能走这里
 	if output != "" {
 		return output
 	}
 
-	return genHtmlName(inputFile, inputFile)
+	hrefAbsoluteFile := ""
+	if parentOutputFile != "" {
+		// 如果 parentOutputFile 不为空，说明不是入口文件，需要根据父文件和href，计算出当前文件的路径
+		hrefAbsoluteFile = getAbsoluteFilePathOfTwoFile(parentOutputFile, href)
+	} else {
+		// parentOutputFile 为空，说明 inputFile 就是入口文件，不需要计算，直接用即可
+		hrefAbsoluteFile = inputFile
+	}
+
+	return genHtmlName(inputFile, hrefAbsoluteFile)
 }
 
-func genHtmlName(inputFile, file string) (res string) {
-	if strings.Contains(file, ".") {
-		file = file[:len(file)-len(filepath.Ext(file))] + ".html"
+// relativePathCurrentDir 是相对于当前目录的相对路径
+// file 是一个指向这个文件的不知道「当前目录」的相对路径，可能是 ./a ../a .../a ../file/a 等
+// 这个函数的目的，是生成和 file 同层级的，以 html 为后缀的文件相对路径，如 ./a.html ../a.html ../file/a.html 等
+func genHtmlName(curRelativePath, anyRelativePath string) (res string) {
+	// 将 file 的后缀替换为 .html
+	if strings.Contains(anyRelativePath, ".") {
+		anyRelativePath = anyRelativePath[:len(anyRelativePath)-len(filepath.Ext(anyRelativePath))] + ".html"
 	} else {
-		file = file + ".html"
+		anyRelativePath = anyRelativePath + ".html"
 	}
-	if inputFile == mainInputFile {
-		file = filepath.Join(filepath.Dir(file), mainHtmlBaseFile)
+
+	// 如果这个文件是入口文件，则路径是定死的，直接返回
+	if curRelativePath == mainInputFile {
+		return filepath.Join(filepath.Dir(anyRelativePath), mainHtmlBaseFile)
 	}
-	return file
+
+	// markdown 文件中有 slug meta，替换后缀名
+	meta := getMeta(curRelativePath)
+	if meta != nil && meta.Slug != "" {
+		return replaceSlugHtmlName(anyRelativePath, meta.Slug)
+	}
+
+	return anyRelativePath
+}
+
+func replaceSlugHtmlName(path, slug string) string {
+	dir, base := filepath.Split(path)
+	ext := filepath.Ext(base)
+	if ext == "" {
+		// "/a/b/c" => ["/a/b", "c"] => ["/a/b", "slug"] => "/a/b/slug"
+		return dir + slug
+	}
+
+	// "/a/b/c.html" => ["/a/b", "c.html"] => ["/a/b", "slug.html"] => "/a/b/slug.html"
+	return dir + slug + ".html"
 }
 
 func getTitle(file string, title string) string {
 	if title != "" {
 		return title
 	}
-	return filepath.Base(file)
+	meta := getMeta(file)
+	if meta == nil || meta.Title == "" {
+		return filepath.Base(file)
+	}
+	return meta.Title
 }
 
 func convertWithGitHubApi(title string, text string) (string, error) {
@@ -197,4 +250,30 @@ func writeFile(targetFile, content string) error {
 
 func getAbsoluteFilePathOfTwoFile(a, b string) string {
 	return filepath.Join(filepath.Dir(a), b)
+}
+
+func getMeta(file string) *mdMeta {
+	if v, ok := metas[file]; ok {
+		return v
+	}
+	bs, err := ioutil.ReadFile(file)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		panic(err)
+	}
+	source, m, err := ParseMarkdownMeta(string(bs))
+	if err != nil {
+		panic(err)
+	}
+	if len(m) == 0 {
+		return nil
+	}
+	meta := new(mdMeta)
+	meta.Source = source
+	meta.Title = m["title"]
+	meta.Slug = m["slug"]
+	metas[file] = meta
+	return meta
 }

@@ -48,6 +48,12 @@ Default output HTML file is `<input_filename.html>`, you can add `--output` args
 mdcat --title "Hi, Cat" --output ./docs/index.html <markdown_file.md>
 ```
 
+If the markdown file references another markdown file (in the form of [title](./markdown-file.md)), and you want to render the referenced file at the same time, then you can use the `--link` parameter:
+
+```shell
+mdcat --title "Hi, Cat" --output ./docs/index.html --link <markdown_file.md>
+```
+
 ## Demo
 
 You can see this markdown file's HTML on:
