@@ -1,6 +1,7 @@
 package mdcat
 
 import (
+	"bytes"
 	"context"
 	_ "embed"
 	"encoding/json"
@@ -11,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	template2 "text/template"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
@@ -32,12 +34,12 @@ type mdMeta struct {
 	Slug   string
 }
 
-func Run(inputFile, title string, link bool, output string) error {
-	outputFile := genTargetFilePath(inputFile, output, "", "")
+func Run(inputFile string, config *Config) error {
+	outputFile := genTargetFilePath(inputFile, config.Output, "", "")
 	mainInputFile = inputFile
 	mainHtmlBaseFile = filepath.Base(outputFile)
 
-	_, err := run(inputFile, outputFile, title, link)
+	_, err := run(inputFile, outputFile, config.Title, config.Link, config.Gitalk)
 	if err != nil {
 		return err
 	}
@@ -47,7 +49,7 @@ func Run(inputFile, title string, link bool, output string) error {
 	return nil
 }
 
-func run(inputFile, outputFile, title string, link bool) (bool, error) {
+func run(inputFile, outputFile, title string, link bool, configGitalk *ConfigGitalk) (bool, error) {
 	title = getTitle(inputFile, title)
 
 	if done[inputFile] {
@@ -59,6 +61,7 @@ func run(inputFile, outputFile, title string, link bool) (bool, error) {
 
 	sourceText := ""
 	meta := getMeta(inputFile)
+	slug := ""
 	if meta == nil {
 		bs, err := ioutil.ReadFile(inputFile)
 		if err != nil {
@@ -67,9 +70,10 @@ func run(inputFile, outputFile, title string, link bool) (bool, error) {
 		sourceText = string(bs)
 	} else {
 		sourceText = meta.Source
+		slug = meta.Slug
 	}
 
-	html, err := convertWithGitHubApi(title, sourceText)
+	html, err := convertWithGitHubApi(title, sourceText, configGitalk.clone(slug))
 	if err != nil {
 		return false, err
 	}
@@ -84,7 +88,7 @@ func run(inputFile, outputFile, title string, link bool) (bool, error) {
 			hrefOutputFile := genTargetFilePath(hrefInputFile, "", outputFile, href)
 
 			if !done[hrefInputFile] {
-				_, _ = run(hrefInputFile, hrefOutputFile, "", link)
+				_, _ = run(hrefInputFile, hrefOutputFile, "", link, configGitalk)
 			}
 		}
 	}
@@ -185,17 +189,21 @@ func getTitle(file string, title string) string {
 	return meta.Title
 }
 
-func convertWithGitHubApi(title string, text string) (string, error) {
+func convertWithGitHubApi(title, text string, configGitalk *ConfigGitalk) (string, error) {
 	htmlString, err := githubConvertMarkdown(text)
 	if err != nil {
 		return "", err
 	}
 
-	htmlTemplate := template // 防止 template 被修改
-	htmlTemplate = strings.ReplaceAll(htmlTemplate, "$MD_TITLE", title)
-	htmlTemplate = strings.ReplaceAll(htmlTemplate, "$MD_HTML", htmlString)
+	// htmlTemplate := template // 防止 template 被修改
+	// htmlTemplate = strings.ReplaceAll(htmlTemplate, "$MD_TITLE", title)
+	// htmlTemplate = strings.ReplaceAll(htmlTemplate, "$MD_HTML", htmlString)
 
-	return htmlTemplate, nil
+	return buildTemplate(template, map[string]interface{}{
+		"Title":  title,
+		"Html":   htmlString,
+		"Gitalk": configGitalk,
+	})
 }
 
 var readMd = func(path string) (string, error) {
@@ -276,4 +284,17 @@ func getMeta(file string) *mdMeta {
 	meta.Slug = m["slug"]
 	metas[file] = meta
 	return meta
+}
+
+func buildTemplate(templat string, data interface{}) (string, error) {
+	t, err := template2.New("").Parse(templat)
+	if err != nil {
+		return "", err
+	}
+	buf := new(bytes.Buffer)
+	err = t.Execute(buf, data)
+	if err != nil {
+		return "", err
+	}
+	return buf.String(), nil
 }

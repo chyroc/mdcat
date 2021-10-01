@@ -6,7 +6,7 @@
     <link rel="stylesheet alternate"
           href="https://cdn.jsdelivr.net/gh/primer/github-syntax-dark@master/lib/github-dark.css" id="dark-hl">
 
-    <title>{{.Title}}</title>
+    <title>自定义标题</title>
 </head>
 
 <body id="markdown-body" data-color-mode="light" data-dark-theme="light">
@@ -32,29 +32,31 @@
             </div>
         </div>
         <article class="markdown-body entry-content container-lg" itemprop="text">
-            {{.Html}}
+            <h1>
+<a id="user-content-hi" class="anchor" href="#hi" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>hi</h1>
+
         </article>
-        {{if .Gitalk}}<div id="gitalk-container"></div>{{end}}
+        <div id="gitalk-container"></div>
     </div>
 </div>
 
-{{if .Gitalk}}
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
 <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
 <script>
     const gitalk = new Gitalk({
-        clientID: '{{.Gitalk.ClientID}}',
-        clientSecret: '{{.Gitalk.ClientSecret}}',
-        repo: '{{.Gitalk.Repo}}',      // The repository of store comments,
-        owner: '{{.Gitalk.Owner}}',
-        admin: {{.Gitalk.AdminLitel}},
-        id: '{{.Gitalk.Slug}}',      // Ensure uniqueness and length less than 50
-        labels: {{.Gitalk.LabelsLitel}},
+        clientID: 'client_id',
+        clientSecret: 'secret',
+        repo: 'repo',      // The repository of store comments,
+        owner: 'owner',
+        admin: ['admin','admin2'],
+        id: 'zi-dingyi-biaoti',      // Ensure uniqueness and length less than 50
+        labels: ['gitment'],
         distractionFreeMode: false  // Facebook-like distraction free mode
     })
     gitalk.render('gitalk-container')
 </script>
-{{end}}
+
 
 <script src="https://cdn.jsdelivr.net/gh/calganaygun/MDcat@main/theme.js"></script>
 <script src="https://code.iconify.design/2/2.0.3/iconify.min.js"></script>

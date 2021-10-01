@@ -28,22 +28,31 @@ func main() {
 				Value: false,
 				Usage: "convert linked markdown file",
 			},
+			&cli.StringFlag{
+				Name:  "config",
+				Value: "",
+				Usage: "config file",
+			},
 		},
 		Action: func(c *cli.Context) error {
 			setupLog()
 
 			file := c.Args().First()
-			title := c.String("title")
-			output := c.String("output")
-			link := c.Bool("link")
-
+			config, err := mdcat.ParseConfig(
+				c.String("config"),
+				c.String("title"),
+				c.String("output"),
+				c.Bool("link"))
+			if err != nil {
+				return err
+			}
 			if file == "" {
 				return cli.ShowAppHelp(c)
 			}
 
-			log.Printf("input: file=%q, title=%q, output=%q, link=%v", file, title, output, link)
+			log.Printf("input: file=%q, config=%#v", file, config)
 
-			return mdcat.Run(file, title, link, output)
+			return mdcat.Run(file, config)
 		},
 	}
 

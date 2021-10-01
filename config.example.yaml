@@ -1,0 +1,9 @@
+link: false
+gitalk: # https://github.com/gitalk/gitalk/blob/master/readme-cn.md
+    client_id: "client_id"
+    client_secret: "secret"
+    repo: "repo"
+    owner: "owner"
+    admin: ["admin", "admin2"]
+    id: "id"
+    labels: ["gitment"]

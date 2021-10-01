@@ -21,7 +21,7 @@ func TestName(t *testing.T) {
 
 - list1
 - list2
-`)
+`, nil)
 			as.Nil(err)
 			as.Contains(res, "<title>title</title>")
 			as.Contains(res, "you are great</h2>")
@@ -36,11 +36,15 @@ func Test_Rel(t *testing.T) {
 	as := assert.New(t)
 
 	runWithFunc := func() {
-		as.Nil(Run("testdata/1.md", "Hi", true, "dist/index.html"))
+		as.Nil(Run("testdata/1.md", &Config{
+			Title:  "Hi",
+			Link:   true,
+			Output: "dist/index.html",
+		}))
 	}
 
 	runWithGo := func() {
-		cmd := exec.Command(`go`, `run`, `main.go`, `--link`, `--output`, `dist/index.html`, `--title`, `Hi`, `testdata/1.md`)
+		cmd := exec.Command(`go`, `run`, `main.go`, `--link`, `--output`, `dist/index.html`, `--title`, `Hi`, "--config", "config.example.yaml", `testdata/1.md`)
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
@@ -86,6 +90,9 @@ func Test_Rel(t *testing.T) {
 			})
 			assertFileNotContain(t, "dist/zi-dingyi-biaoti.html", []string{
 				`title: 自定义标题`,
+			})
+			assertFileNotContain(t, "dist/zi-dingyi-biaoti.html", []string{
+				`id: 'zi-dingyi-biaoti',`,
 			})
 		})
 	}
