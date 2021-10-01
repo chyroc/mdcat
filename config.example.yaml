@@ -1,4 +1,5 @@
 link: false
+omit_html_suffix: false
 gitalk: # https://github.com/gitalk/gitalk/blob/master/readme-cn.md
     client_id: "client_id"
     client_secret: "secret"

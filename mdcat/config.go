@@ -9,10 +9,11 @@ import (
 )
 
 type Config struct {
-	Link   bool          `yaml:"link"`
-	Title  string        `yaml:"title"`
-	Output string        `yaml:"output"`
-	Gitalk *ConfigGitalk `yaml:"gitalk"`
+	Link             bool          `yaml:"link"`
+	Title            string        `yaml:"title"`
+	Output           string        `yaml:"output"`
+	Gitalk           *ConfigGitalk `yaml:"gitalk"`
+	IsOmitHtmlSuffix bool          `yaml:"omit_html_suffix"`
 }
 
 type ConfigGitalk struct {
@@ -69,6 +70,7 @@ func ParseConfig(file string, title, output string, link bool) (*Config, error) 
 		}
 	}
 
+	conf = t
 	return t, nil
 }
 

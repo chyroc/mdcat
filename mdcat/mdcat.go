@@ -26,6 +26,7 @@ var (
 	metas            = map[string]*mdMeta{}
 	mainInputFile    string
 	mainHtmlBaseFile string
+	conf             *Config
 )
 
 type mdMeta struct {
@@ -116,7 +117,9 @@ func replaceChildMarkdownLink(inputFile, parentHtml string) (string, []string, b
 		}
 
 		links = append(links, href)
-		selection.SetAttr("href", genHtmlName(hrefInputFile, href))
+		targetHref := genHtmlName(hrefInputFile, href)                                // a/b/c.index
+		targetHref = targetHref[:len(targetHref)-len(filepath.Ext(targetHref))] + "/" // a/b/c/
+		selection.SetAttr("href", targetHref)
 	})
 
 	h, _ := doc.Html()
@@ -138,7 +141,14 @@ func genTargetFilePath(inputFile string, output string, parentOutputFile, href s
 		hrefAbsoluteFile = inputFile
 	}
 
-	return genHtmlName(inputFile, hrefAbsoluteFile)
+	target := genHtmlName(inputFile, hrefAbsoluteFile) // a/b/c.html
+
+	if conf.IsOmitHtmlSuffix {
+		prefix := target[:len(target)-len(filepath.Ext(target))]
+		target = prefix + "/index.html" // a/b/c/index.html
+	}
+
+	return target
 }
 
 // relativePathCurrentDir 是相对于当前目录的相对路径
@@ -160,8 +170,10 @@ func genHtmlName(curRelativePath, anyRelativePath string) (res string) {
 	// markdown 文件中有 slug meta，替换后缀名
 	meta := getMeta(curRelativePath)
 	if meta != nil && meta.Slug != "" {
-		return replaceSlugHtmlName(anyRelativePath, meta.Slug)
+		anyRelativePath = replaceSlugHtmlName(anyRelativePath, meta.Slug)
 	}
+
+	// if
 
 	return anyRelativePath
 }
