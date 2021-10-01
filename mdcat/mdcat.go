@@ -117,8 +117,10 @@ func replaceChildMarkdownLink(inputFile, parentHtml string) (string, []string, b
 		}
 
 		links = append(links, href)
-		targetHref := genHtmlName(hrefInputFile, href)                                // a/b/c.index
-		targetHref = targetHref[:len(targetHref)-len(filepath.Ext(targetHref))] + "/" // a/b/c/
+		targetHref := genHtmlName(hrefInputFile, href) // a/b/c.index
+		if conf != nil && conf.IsOmitHtmlSuffix {
+			targetHref = targetHref[:len(targetHref)-len(filepath.Ext(targetHref))] + "/" // a/b/c/
+		}
 		selection.SetAttr("href", targetHref)
 	})
 
@@ -143,7 +145,7 @@ func genTargetFilePath(inputFile string, output string, parentOutputFile, href s
 
 	target := genHtmlName(inputFile, hrefAbsoluteFile) // a/b/c.html
 
-	if conf.IsOmitHtmlSuffix {
+	if conf != nil && conf.IsOmitHtmlSuffix {
 		prefix := target[:len(target)-len(filepath.Ext(target))]
 		target = prefix + "/index.html" // a/b/c/index.html
 	}

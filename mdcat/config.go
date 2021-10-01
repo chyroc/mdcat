@@ -71,6 +71,7 @@ func ParseConfig(file string, title, output string, link bool) (*Config, error) 
 	}
 
 	conf = t
+
 	return t, nil
 }
 

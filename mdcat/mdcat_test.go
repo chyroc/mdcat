@@ -52,7 +52,7 @@ func Test_Rel(t *testing.T) {
 	}
 	_ = runWithGo
 
-	for _, f := range []func(){runWithFunc, runWithGo} {
+	for idx, f := range []func(){runWithFunc, runWithGo} {
 		t.Run("", func(t *testing.T) {
 			pwd, err := os.Getwd()
 			as.Nil(err)
@@ -88,11 +88,13 @@ func Test_Rel(t *testing.T) {
 			assertFileContain(t, "dist/zi-dingyi-biaoti.html", []string{
 				`<title>自定义标题</title>`,
 			})
+			if idx == 1 {
+				assertFileContain(t, "dist/zi-dingyi-biaoti.html", []string{
+					`id: 'zi-dingyi-biaoti',`,
+				})
+			}
 			assertFileNotContain(t, "dist/zi-dingyi-biaoti.html", []string{
 				`title: 自定义标题`,
-			})
-			assertFileNotContain(t, "dist/zi-dingyi-biaoti.html", []string{
-				`id: 'zi-dingyi-biaoti',`,
 			})
 		})
 	}
