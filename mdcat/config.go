@@ -3,6 +3,7 @@ package mdcat
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 
 	"github.com/chyroc/go-lambda"
 	"gopkg.in/yaml.v2"
@@ -33,6 +34,15 @@ type ConfigGitalk struct {
 func ParseConfig(file string, title, output string, link bool) (*Config, error) {
 	bs, err := ioutil.ReadFile(file)
 	if err != nil {
+		if os.IsNotExist(err) {
+			return &Config{
+				Link:             link,
+				Title:            title,
+				Output:           output,
+				Gitalk:           nil,
+				IsOmitHtmlSuffix: false,
+			}, nil
+		}
 		return nil, err
 	}
 	t := new(Config)
