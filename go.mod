@@ -6,7 +6,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/chyroc/go-lambda v0.8.0
 	github.com/stretchr/testify v1.7.4
-	github.com/urfave/cli/v2 v2.10.2
+	github.com/urfave/cli/v2 v2.10.3
 	gopkg.in/yaml.v2 v2.4.0
 )
 
