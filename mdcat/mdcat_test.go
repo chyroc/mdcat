@@ -21,7 +21,7 @@ func TestName(t *testing.T) {
 
 - list1
 - list2
-`, nil)
+`, nil, false)
 			as.Nil(err)
 			as.Contains(res, "<title>title</title>")
 			as.Contains(res, "you are great</h2>")

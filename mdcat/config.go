@@ -14,6 +14,7 @@ type Config struct {
 	Title            string        `yaml:"title"`
 	Output           string        `yaml:"output"`
 	Gitalk           *ConfigGitalk `yaml:"gitalk"`
+	FastClick        bool          `yaml:"fast_click"`
 	IsOmitHtmlSuffix bool          `yaml:"omit_html_suffix"`
 }
 

@@ -40,7 +40,7 @@ func Run(inputFile string, config *Config) error {
 	mainInputFile = inputFile
 	mainHtmlBaseFile = filepath.Base(outputFile)
 
-	_, err := run(inputFile, outputFile, config.Title, config.Link, config.Gitalk)
+	_, err := run(inputFile, outputFile, config.Title, config.Link, config.Gitalk, config.FastClick)
 	if err != nil {
 		return err
 	}
@@ -50,7 +50,7 @@ func Run(inputFile string, config *Config) error {
 	return nil
 }
 
-func run(inputFile, outputFile, title string, link bool, configGitalk *ConfigGitalk) (bool, error) {
+func run(inputFile, outputFile, title string, link bool, configGitalk *ConfigGitalk, fastClick bool) (bool, error) {
 	title = getTitle(inputFile, title)
 
 	if done[inputFile] {
@@ -74,7 +74,7 @@ func run(inputFile, outputFile, title string, link bool, configGitalk *ConfigGit
 		slug = meta.Slug
 	}
 
-	html, err := convertWithGitHubApi(title, sourceText, configGitalk.clone(slug))
+	html, err := convertWithGitHubApi(title, sourceText, configGitalk.clone(slug), fastClick)
 	if err != nil {
 		return false, err
 	}
@@ -89,7 +89,7 @@ func run(inputFile, outputFile, title string, link bool, configGitalk *ConfigGit
 			hrefOutputFile := genTargetFilePath(hrefInputFile, "", outputFile, href)
 
 			if !done[hrefInputFile] {
-				_, _ = run(hrefInputFile, hrefOutputFile, "", link, configGitalk)
+				_, _ = run(hrefInputFile, hrefOutputFile, "", link, configGitalk, fastClick)
 			}
 		}
 	}
@@ -203,7 +203,7 @@ func getTitle(file string, title string) string {
 	return meta.Title
 }
 
-func convertWithGitHubApi(title, text string, configGitalk *ConfigGitalk) (string, error) {
+func convertWithGitHubApi(title, text string, configGitalk *ConfigGitalk, fastClick bool) (string, error) {
 	htmlString, err := githubConvertMarkdown(text)
 	if err != nil {
 		return "", err
@@ -214,9 +214,10 @@ func convertWithGitHubApi(title, text string, configGitalk *ConfigGitalk) (strin
 	// htmlTemplate = strings.ReplaceAll(htmlTemplate, "$MD_HTML", htmlString)
 
 	return buildTemplate(template, map[string]interface{}{
-		"Title":  title,
-		"Html":   htmlString,
-		"Gitalk": configGitalk,
+		"Title":     title,
+		"Html":      htmlString,
+		"Gitalk":    configGitalk,
+		"FastClick": fastClick,
 	})
 }
 
